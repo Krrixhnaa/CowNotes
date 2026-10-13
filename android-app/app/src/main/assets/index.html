@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>CowNotes</title>
+  
+  <!-- Mobile & PWA Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CowNotes">
+  <meta name="theme-color" content="#007AFF">
+  
+  <!-- Icons & Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ios-theme.css?v=46">
+</head>
+<body>
+
+  <div id="app-container" class="view-folders">
+
+    <!-- =======================================================================
+         PANE 1: FOLDERS (FIRST PAGE ON APP LAUNCH)
+         ======================================================================= -->
+    <aside class="ios-sidebar ios-folders-pane" id="pane-folders">
+      <header class="ios-nav-bar">
+        <div class="ios-nav-left">
+          <button class="ios-nav-btn bold" id="btn-theme-toggle" title="Toggle Dark/Light Mode">
+            <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8A9 9 0 0 0 12 3z"/></svg>
+          </button>
+        </div>
+        <div class="ios-nav-right">
+          <div class="ios-sync-pill" id="sync-pill" title="Backup & Restore">
+            <span class="ios-sync-dot" id="sync-dot"></span>
+          </div>
+          
+        </div>
+      </header>
+
+      <div class="ios-large-header">
+        <h1 class="ios-large-title">Folders</h1>
+      </div>
+
+      <div class="ios-search-wrapper">
+        <div class="ios-search-bar">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" class="ios-search-input" id="folders-search-input" placeholder="Search" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="ios-scroll-content" style="padding: 12px 16px 90px 16px;">
+        <!-- Inset Grouped Section: System Folders (All Notes, Pinned, Recently Deleted) -->
+        <div class="ios-inset-card" style="margin-bottom: 20px;">
+          <div id="system-folders-group">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+
+        <!-- Custom Folders Section -->
+        <div class="ios-inset-card" id="custom-folders-card">
+          <div id="custom-folders-group">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+      </div>
+
+      <footer class="ios-bottom-bar">
+        <button class="ios-icon-btn" id="btn-new-folder" title="New Folder" style="display:flex;align-items:center;gap:6px;font-size:15px;color:var(--ios-yellow);font-weight:600;padding:6px 0;">
+          <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor;"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10zm-7-1h2v-2h2v-2h-2v-2h-2v2h-2v2h2z"/></svg>
+          <span style="font-size:15px;margin-left:2px;">New Folder</span>
+        </button>
+        <button class="ios-icon-btn" id="btn-sidebar-new-note" title="New Note" style="width:38px;height:38px;padding:0;">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+      </footer>
+    </aside>
+
+    <!-- =======================================================================
+         PANE 2: NOTES LIST
+         ======================================================================= -->
+    <main class="ios-notes-list-pane" id="pane-notes-list">
+      <header class="ios-nav-bar">
+        <div class="ios-nav-left">
+          <button class="ios-nav-btn bold" id="btn-nav-to-folders" style="display:flex;align-items:center;gap:4px;padding:4px 0;">
+            <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor;"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            <span id="nav-folders-label">Folders</span>
+          </button>
+        </div>
+        <div class="ios-nav-right" style="display:flex;align-items:center;gap:8px;">
+          <div class="ios-sync-pill" id="notes-sync-pill" title="Backup & Restore">
+            <span class="ios-sync-dot" id="notes-sync-dot"></span>
+          </div>
+          <!-- Horizontal 3-dot ellipsis button -->
+          <button class="ios-icon-circle-btn" id="btn-folder-options" title="Folder Options">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+          </button>
+          <button class="ios-nav-btn bold" id="btn-selection-done" style="display:none;color:var(--ios-yellow);font-size:16px;">Done</button>
+        </div>
+      </header>
+
+      <div class="ios-large-header">
+        <h1 class="ios-large-title" id="current-folder-title">Notes</h1>
+      </div>
+
+      <div class="ios-search-wrapper">
+        <div class="ios-search-bar">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" class="ios-search-input" id="search-input" placeholder="Search" autocomplete="off">
+          <button class="ios-search-clear" id="search-clear">✕</button>
+        </div>
+      </div>
+
+      <div class="ios-filter-chips">
+        <button class="ios-chip active" data-filter="all">All</button>
+        <button class="ios-chip" data-filter="pinned">Pinned</button>
+        <button class="ios-chip" data-filter="checklists">Checklists</button>
+        <button class="ios-chip" data-filter="audio">Voice Memos</button>
+        <button class="ios-chip" data-filter="drawings">Drawings</button>
+        <button class="ios-chip" data-filter="locked">Locked</button>
+      </div>
+
+      
+
+      <div class="ios-scroll-content" id="notes-scroll-content" style="padding: 0 16px 90px 16px;">
+        <div id="notes-cards-container">
+          <!-- Dynamically populated note cards -->
+        </div>
+      </div>
+
+      <footer class="ios-bottom-bar" id="notes-bottom-bar">
+        <div style="width: 24px;"></div>
+        <div class="ios-notes-summary" id="notes-summary-text"></div>
+        <button class="ios-icon-btn" id="btn-create-note" title="New Note">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+      </footer>
+
+      <!-- Selection Mode Bottom Bar -->
+      <footer class="ios-bottom-bar" id="selection-bottom-bar" style="display: none; justify-content: space-between; align-items: center; padding: 0 20px;">
+        <button class="ios-nav-btn bold" id="btn-selection-delete" style="color: #FF3B30; font-size: 16px; padding: 8px 0; background: none; border: none; cursor: pointer;">Delete</button>
+        <div id="selection-count-text" style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Select Notes</div>
+        <button class="ios-nav-btn bold" id="btn-selection-move" style="color: var(--ios-yellow); font-size: 16px; padding: 8px 0; background: none; border: none; cursor: pointer;">Move</button>
+      </footer>
+    </main>
+
+    <!-- =======================================================================
+         PANE 3: NOTE EDITOR
+         ======================================================================= -->
+    <section class="ios-editor-pane" id="pane-editor">
+      <header class="ios-nav-bar">
+        <div class="ios-nav-left">
+          <button class="ios-nav-btn bold" id="btn-editor-back" style="display:flex;align-items:center;gap:4px;padding:4px 0;">
+            <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor;"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            <span id="editor-back-folder-name">Notes</span>
+          </button>
+        </div>
+        <div class="ios-nav-right" style="display:flex;align-items:center;gap:12px;">
+          <button class="ios-icon-btn" id="btn-share-note" title="Share & Export">
+            <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+          </button>
+          <!-- Horizontal 3-dot ellipsis button -->
+          <button class="ios-icon-btn" id="btn-note-options" title="More Options">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+          </button>
+          <button class="ios-nav-btn bold" id="btn-editor-done">Done</button>
+        </div>
+      </header>
+
+      <div class="ios-editor-scroll" id="editor-scroll">
+        <div class="ios-editor-timestamp" id="editor-timestamp">October 11, 2026 at 2:30 PM</div>
+        <textarea class="ios-title-input" id="note-title-input" placeholder="Title" rows="1" autocomplete="off"></textarea>
+        <div class="ios-body-editor" id="note-body-editor" contenteditable="true"></div>
+      </div>
+
+      <!-- Editor Toolbar -->
+      <footer class="ios-editor-toolbar" id="editor-toolbar">
+        <button class="ios-icon-btn" id="tb-checklist" title="Insert Checklist">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <polyline points="8 12 11 15 16 9"></polyline>
+          </svg>
+        </button>
+        <button class="ios-icon-btn ios-format-btn" id="tb-bold" title="Bold (Ctrl+B)">
+          <span class="ios-format-label bold">B</span>
+        </button>
+        <button class="ios-icon-btn ios-format-btn" id="tb-italic" title="Italic (Ctrl+I)">
+          <span class="ios-format-label italic">I</span>
+        </button>
+        <button class="ios-icon-btn ios-format-btn" id="tb-underline" title="Underline (Ctrl+U)">
+          <span class="ios-format-label underline">U</span>
+        </button>
+        <button class="ios-icon-btn" id="tb-media" title="Insert Photo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+            <circle cx="8.5" cy="8.5" r="2"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </button>
+        <button class="ios-icon-btn" id="tb-mic" title="Dictate (Speech to Text)">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+            <path d="M5 10v2a7 7 0 0 0 14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+        <button class="ios-icon-btn" id="tb-draw" title="Sketch Note">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        </button>
+      </footer>
+    </section>
+
+  </div>
+
+  <!-- =======================================================================
+       MODAL 2: PIN LOCK & PASSCODE
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-pin-lock">
+    <div class="ios-sheet" style="align-items: center;">
+      <div class="ios-drag-handle"></div>
+      <h2 class="ios-sheet-title" id="pin-modal-title">Enter Passcode</h2>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:4px;" id="pin-modal-subtitle">This note is locked.</p>
+      
+      <div class="ios-pin-dots">
+        <div class="ios-pin-dot"></div>
+        <div class="ios-pin-dot"></div>
+        <div class="ios-pin-dot"></div>
+        <div class="ios-pin-dot"></div>
+      </div>
+
+      <div class="ios-keypad">
+        <button class="ios-keypad-btn" data-key="1">1</button>
+        <button class="ios-keypad-btn" data-key="2">2</button>
+        <button class="ios-keypad-btn" data-key="3">3</button>
+        <button class="ios-keypad-btn" data-key="4">4</button>
+        <button class="ios-keypad-btn" data-key="5">5</button>
+        <button class="ios-keypad-btn" data-key="6">6</button>
+        <button class="ios-keypad-btn" data-key="7">7</button>
+        <button class="ios-keypad-btn" data-key="8">8</button>
+        <button class="ios-keypad-btn" data-key="9">9</button>
+        <button class="ios-keypad-btn" id="btn-pin-cancel" style="font-size:16px;">Cancel</button>
+        <button class="ios-keypad-btn" data-key="0">0</button>
+        <button class="ios-keypad-btn" data-key="backspace" style="font-size:20px;">⌫</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL 3: DRAWING CANVAS
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-drawing">
+    <div class="ios-sheet ios-canvas-sheet">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <button class="ios-nav-btn" id="btn-draw-cancel">Cancel</button>
+        <h2 class="ios-sheet-title">Sketch Note</h2>
+        <button class="ios-nav-btn bold" id="btn-draw-save">Save</button>
+      </div>
+
+      <canvas id="drawing-canvas" class="ios-drawing-canvas"></canvas>
+
+      <div class="ios-canvas-toolbar">
+        <div class="ios-color-swatches">
+          <div class="ios-swatch active" style="background:#000000;" data-color="#000000"></div>
+          <div class="ios-swatch" style="background:#EAA800;" data-color="#EAA800"></div>
+          <div class="ios-swatch" style="background:#007AFF;" data-color="#007AFF"></div>
+          <div class="ios-swatch" style="background:#FF3B30;" data-color="#FF3B30"></div>
+          <div class="ios-swatch" style="background:#34C759;" data-color="#34C759"></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="ios-icon-btn" id="btn-draw-undo" title="Undo">
+            <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          </button>
+          <button class="ios-icon-btn" id="btn-draw-clear" title="Clear">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL 4: NOTE OPTIONS & DETAILS
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-note-options">
+    <div class="ios-sheet" style="max-height: 85vh;">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <h2 class="ios-sheet-title">Note Actions</h2>
+        <button class="ios-nav-btn bold" id="btn-close-options-modal">Done</button>
+      </div>
+
+      <div class="ios-scroll-content" style="padding: 10px 16px 24px 16px;">
+        <!-- Group 1: Organize & Protect -->
+        <div class="ios-menu-group">
+          <div class="ios-menu-row" id="opt-pin-note">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>
+              </span>
+              <span class="ios-menu-label" id="opt-pin-text">Pin Note</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+
+          <div class="ios-menu-row" id="opt-lock-note">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+              </span>
+              <span class="ios-menu-label" id="opt-lock-text">Lock Note</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+
+          <div class="ios-menu-row" id="opt-move-folder">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3v-3h2v3h3v2z"/></svg>
+              </span>
+              <span class="ios-menu-label">Move to Folder</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+        </div>
+
+        <!-- Group 2: Tools & Export -->
+        <div class="ios-menu-group">
+          <div class="ios-menu-row" id="opt-export-md">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              </span>
+              <span class="ios-menu-label">Export as Markdown (.md)</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+
+          <div class="ios-menu-row" id="opt-print-note">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+              </span>
+              <span class="ios-menu-label">Print / Save as PDF</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+
+          <div class="ios-menu-row" id="opt-voice-memo">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+              </span>
+              <span class="ios-menu-label" id="lbl-voice-memo">Record Audio Memo</span>
+            </div>
+            <svg viewBox="0 0 24 24" class="ios-menu-chevron"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+          </div>
+        </div>
+
+        <!-- Group 3: Destructive -->
+        <div class="ios-menu-group">
+          <div class="ios-menu-row danger" id="opt-delete-note">
+            <div class="ios-menu-left">
+              <span class="ios-menu-icon">
+                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </span>
+              <span class="ios-menu-label">Delete Note</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+
+  <!-- =======================================================================
+       MODAL 5: SYNC & PC CONNECTION SETTINGS
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-sync-settings">
+    <div class="ios-sheet">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <h2 class="ios-sheet-title">CowSync</h2>
+        <button class="ios-nav-btn bold" id="btn-close-sync-modal">Done</button>
+      </div>
+
+      <div class="ios-guide-card" style="margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 24px;">
+          <span class="ios-sync-dot"></span>
+          <b id="backup-summary-text-sync" style="font-size: 15px; font-weight: 600;">0 Notes (0 Folders)</b>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
+        <button class="ios-dictation-btn" id="btn-export-db-sync" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;font-size:16px;border-radius:14px;font-weight:700;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Share / Save Backup (.db)</span>
+        </button>
+
+        <button class="ios-nav-btn" id="btn-import-db-sync" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;font-size:16px;border-radius:14px;border:1px solid var(--border-subtle);background:var(--bg-glass);font-weight:600;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Import &amp; Restore (.db / .md)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- Voice Memo Recording Floating Bar (Bottom Soft Pop-up) -->
+  <div class="ios-voicememo-bar" id="voicememo-bar">
+    <div class="ios-voicememo-status">
+      <div class="ios-voicememo-dot"></div>
+      <div class="ios-voicememo-timer" id="voicememo-timer">00:00</div>
+    </div>
+    <div class="ios-voicememo-waves">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="ios-voicememo-actions">
+      <button type="button" class="ios-voicememo-btn cancel" id="btn-cancel-voicememo" aria-label="Cancel">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button type="button" class="ios-voicememo-btn stop" id="btn-stop-voicememo" aria-label="Finish recording">
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+          <rect x="5" y="5" width="14" height="14" rx="2.5" ry="2.5"/>
+        </svg>
+        <span>Done</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Voice Dictation Floating Wave Bar -->
+  <div class="ios-dictation-bar" id="dictation-bar">
+    <div class="ios-speech-wave">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="ios-dictation-text" id="dictation-status-text">Listening... speak to write</div>
+    <button class="ios-dictation-btn" id="btn-stop-dictation">Done</button>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="ios-toast" id="toast-notification">
+    <span class="ios-toast-icon" id="toast-icon"></span>
+    <span class="ios-toast-text" id="toast-text"></span>
+  </div>
+
+  <!-- Hidden file input for photo upload -->
+  <input type="file" id="media-file-input" accept="image/*" style="display:none;">
+
+  <!-- =======================================================================
+       MODAL 6: DATABASE BACKUP & RESTORE (.db)
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-backup-restore">
+    <div class="ios-sheet">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <h2 class="ios-sheet-title">Database Backup &amp; Restore (.db)</h2>
+        <button class="ios-nav-btn bold" id="btn-close-backup-modal">Done</button>
+      </div>
+
+      <div class="ios-guide-card" style="margin-bottom: 16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span class="ios-db-icon-badge" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;background:rgba(234,168,0,0.15);color:var(--ios-yellow);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+          </span>
+          <b id="backup-summary-text" style="font-size:15px;">Database: 0 Notes</b>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;">
+        <!-- Export Button -->
+        <button class="ios-dictation-btn" id="btn-export-db" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;font-size:16px;border-radius:14px;font-weight:700;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Database (.db)</span>
+        </button>
+
+        <!-- Import Button -->
+        <button class="ios-nav-btn" id="btn-import-db-trigger" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;font-size:16px;border-radius:14px;border:1px solid var(--border-subtle);background:var(--bg-glass);font-weight:600;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Import &amp; Restore (.db / .md / .json)</span>
+        </button>
+      </div>
+
+      <!-- Hidden File Input for .db -->
+      <input type="file" id="db-file-input" accept="*/*" multiple style="display:none;">
+
+      <!-- Restore Preview / Decision Box -->
+      <div id="restore-preview-box" style="display:none;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:14px;margin-top:12px;">
+        <div style="font-weight:700;font-size:15px;margin-bottom:4px;" id="restore-preview-title">Backup File Selected</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;line-height:1.4;" id="restore-preview-desc">Contains 0 notes and 0 folders. Choose how to restore:</div>
+        <div style="display:flex;gap:10px;">
+          <button class="ios-dictation-btn" id="btn-restore-replace" style="flex:1;padding:11px;font-size:14px;border-radius:10px;">Replace All</button>
+          <button class="ios-nav-btn" id="btn-restore-merge" style="flex:1;padding:11px;font-size:14px;border-radius:10px;border:1px solid var(--border-subtle);background:var(--bg-glass);font-weight:600;">Merge Notes</button>
+        </div>
+        <button class="ios-nav-btn" id="btn-restore-cancel" style="width:100%;padding:8px;font-size:13px;color:var(--text-tertiary);margin-top:8px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: DELETE CONFIRMATION ACTION SHEET
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-delete-confirm">
+    <div class="ios-sheet ios-action-sheet" style="max-width: 380px; padding: 12px; background: transparent; border: none; box-shadow: none;">
+      <div style="background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); border: 0.5px solid var(--separator-light);">
+        <div style="padding: 18px 16px; text-align: center; border-bottom: 0.5px solid var(--separator-light);">
+          <div id="delete-confirm-title" style="font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Delete Note</div>
+          <div id="delete-confirm-desc" style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;">Are you sure you want to delete this note?</div>
+        </div>
+        <button id="btn-confirm-delete" style="width: 100%; padding: 15px; background: none; border: none; font-size: 17px; font-weight: 600; color: #FF3B30; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          Delete Note
+        </button>
+      </div>
+      <div style="margin-top: 8px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); border: 0.5px solid var(--separator-light);">
+        <button id="btn-cancel-delete" style="width: 100%; padding: 15px; background: none; border: none; font-size: 17px; font-weight: 600; color: var(--ios-yellow); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: NEW FOLDER ALERT DIALOG
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-new-folder" style="display:flex;align-items:center;justify-content:center;">
+    <div class="ios-alert-dialog">
+      <h3 class="ios-alert-title">New Folder</h3>
+      <p class="ios-alert-message">Enter a name for this folder.</p>
+      <div class="ios-alert-input-wrap">
+        <input type="text" class="ios-alert-input" id="new-folder-input" placeholder="Name" maxlength="40" autocomplete="off">
+      </div>
+      <div class="ios-alert-buttons">
+        <button class="ios-alert-btn cancel" id="btn-new-folder-cancel">Cancel</button>
+        <button class="ios-alert-btn confirm" id="btn-new-folder-save">Save</button>
+      </div>
+    
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: EDIT FOLDER
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-edit-folder">
+    <div class="ios-sheet" style="max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <button class="ios-nav-btn" id="btn-edit-folder-cancel">Cancel</button>
+        <h2 class="ios-sheet-title" id="edit-folder-title">Edit Folder</h2>
+        <button class="ios-nav-btn bold" id="btn-edit-folder-done" style="color:var(--ios-yellow);">Done</button>
+      </div>
+      <div class="ios-scroll-content" style="padding: 12px 16px 28px 16px;">
+        <!-- Inset Box for Folder Icon Preview & Name -->
+        <div class="ios-folder-edit-card">
+          <div class="ios-folder-preview-icon" id="edit-folder-icon-preview">
+            <!-- Icon SVG -->
+          </div>
+          <div class="ios-folder-input-wrap">
+            <input type="text" class="ios-folder-name-input" id="edit-folder-name-input" placeholder="Folder Name" maxlength="40" autocomplete="off">
+            <button class="ios-input-clear-btn" id="edit-folder-clear-btn" type="button">✕</button>
+          </div>
+        </div>
+
+        <!-- Section: Icon Selector Grid (Pure Vector Icons, No Emoji) -->
+        <div class="ios-section-header" style="margin-top: 18px; margin-bottom: 8px; text-transform: uppercase; font-size: 13px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.3px;">Icon</div>
+        <div class="ios-folder-icons-grid" id="edit-folder-icons-grid">
+          <!-- Dynamically populated curated vector icons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: MOVE / REORDER FOLDER
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-reorder-folder">
+    <div class="ios-sheet" style="max-height: 70vh;">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <h2 class="ios-sheet-title" id="reorder-folder-title">Move Folder</h2>
+        <button class="ios-nav-btn bold" id="btn-close-reorder-folder">Done</button>
+      </div>
+      <div class="ios-scroll-content" style="padding: 12px 16px;">
+        <div class="ios-card-group" id="reorder-folder-actions" style="border-radius: 14px; overflow: hidden; border: 0.5px solid var(--separator-light);">
+          <!-- Reorder options dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: RECENTLY DELETED NOTE ACTIONS (RECOVER / DELETE FOREVER)
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-trash-actions">
+    <div class="ios-sheet ios-action-sheet" style="max-width: 380px; padding: 12px; background: transparent; border: none; box-shadow: none;">
+      <div style="background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); border: 0.5px solid var(--separator-light);">
+        <div style="padding: 18px 16px; text-align: center; border-bottom: 0.5px solid var(--separator-light);">
+          <div style="font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;" id="trash-action-title">Note in Recently Deleted</div>
+          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;">Recover this note or delete it permanently.</div>
+        </div>
+        <button id="btn-trash-recover" style="width: 100%; padding: 15px; background: none; border: none; border-bottom: 0.5px solid var(--separator-light); font-size: 17px; font-weight: 600; color: var(--ios-yellow); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          Recover Note
+        </button>
+        <button id="btn-trash-delete-forever" style="width: 100%; padding: 15px; background: none; border: none; font-size: 17px; font-weight: 600; color: #FF3B30; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          Delete Immediately
+        </button>
+      </div>
+      <div style="margin-top: 8px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); border: 0.5px solid var(--separator-light);">
+        <button id="btn-trash-cancel" style="width: 100%; padding: 15px; background: none; border: none; font-size: 17px; font-weight: 600; color: var(--ios-blue); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL: MOVE NOTE TO FOLDER
+       ======================================================================= -->
+  <div class="ios-modal-overlay" id="modal-move-folder">
+    <div class="ios-sheet" style="max-height: 75vh;">
+      <div class="ios-drag-handle"></div>
+      <div class="ios-sheet-header">
+        <h2 class="ios-sheet-title">Move to Folder</h2>
+        <button class="ios-nav-btn bold" id="btn-close-move-folder">Cancel</button>
+      </div>
+      <div class="ios-scroll-content" style="padding: 12px 16px;">
+        <div class="ios-card-group" id="move-folders-list" style="border-radius: 14px; overflow: hidden; border: 0.5px solid var(--separator-light);">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       CONTEXT MENU / POPOVER
+       ======================================================================= -->
+  <div class="ios-context-menu-backdrop" id="ios-context-menu-backdrop">
+    <div class="ios-context-menu" id="ios-context-menu">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+
+  <script src="js/app.js?v=46"></script>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5B800"/>
+      <stop offset="100%" stop-color="#D48B00"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD60A"/>
+      <stop offset="100%" stop-color="#EAA800"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- Base App Background Squircle -->
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Ruled Paper Horizontal Lines in Background -->
+  <line x1="16" y1="120" x2="496" y2="120" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+  <line x1="16" y1="210" x2="496" y2="210" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+  <line x1="16" y1="300" x2="496" y2="300" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+  <line x1="16" y1="390" x2="496" y2="390" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+
+  <!-- Notepad Paper Card -->
+  <rect x="80" y="80" width="352" height="370" rx="36" fill="#FFFFFF" filter="url(#cardShadow)"/>
+  
+  <!-- Notepad Golden Header Band -->
+  <path d="M 80,116 C 80,96 96,80 116,80 L 396,80 C 416,80 432,96 432,116 L 432,136 L 80,136 Z" fill="url(#headerGrad)"/>
+  <line x1="80" y1="136" x2="432" y2="136" stroke="#D48806" stroke-width="3" stroke-dasharray="8,5"/>
+
+  <!-- Notepad Ruled Lines -->
+  <line x1="120" y1="220" x2="392" y2="220" stroke="#E5E5EA" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="120" y1="270" x2="392" y2="270" stroke="#E5E5EA" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="120" y1="320" x2="392" y2="320" stroke="#E5E5EA" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="120" y1="370" x2="392" y2="370" stroke="#E5E5EA" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="120" y1="420" x2="392" y2="420" stroke="#E5E5EA" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Cute Cow Mascot Silhouette In Center -->
+  <!-- Left Horn -->
+  <path d="M 215,200 C 205,175 210,150 230,145 C 235,160 230,185 215,200 Z" fill="#EAA800"/>
+  <!-- Right Horn -->
+  <path d="M 297,200 C 307,175 302,150 282,145 C 277,160 282,185 297,200 Z" fill="#EAA800"/>
+
+  <!-- Left Ear -->
+  <path d="M 185,215 C 160,205 145,225 155,245 C 175,245 185,230 185,215 Z" fill="#2C2C2E"/>
+  <path d="M 175,222 C 165,217 158,228 165,238 C 174,237 178,229 175,222 Z" fill="#FFAEB9"/>
+
+  <!-- Right Ear -->
+  <path d="M 327,215 C 352,205 367,225 357,245 C 337,245 327,230 327,215 Z" fill="#2C2C2E"/>
+  <path d="M 337,222 C 347,217 354,228 347,238 C 338,237 334,229 337,222 Z" fill="#FFAEB9"/>
+
+  <!-- Cow Head Base -->
+  <rect x="196" y="190" width="120" height="125" rx="36" fill="#FFFFFF" stroke="#2C2C2E" stroke-width="7"/>
+
+  <!-- Cow Spot (Aesthetic Black Spot on Upper Left Face) -->
+  <path d="M 196,215 C 210,215 228,205 235,225 C 240,240 220,255 205,255 C 196,255 196,240 196,215 Z" fill="#2C2C2E"/>
+
+  <!-- Cow Eyes -->
+  <circle cx="225" cy="255" r="7" fill="#1C1C1E"/>
+  <circle cx="227" cy="253" r="2.5" fill="#FFFFFF"/>
+  
+  <circle cx="287" cy="255" r="7" fill="#1C1C1E"/>
+  <circle cx="289" cy="253" r="2.5" fill="#FFFFFF"/>
+
+  <!-- Cow Snout / Muzzle -->
+  <rect x="206" y="275" width="100" height="52" rx="24" fill="#FFAEB9" stroke="#E896A2" stroke-width="2"/>
+  <!-- Nostrils -->
+  <ellipse cx="236" cy="301" rx="5" ry="7" fill="#C45A68"/>
+  <ellipse cx="276" cy="301" rx="5" ry="7" fill="#C45A68"/>
+
+  <!-- Stylish Little Pencil in Cow Mouth / Bottom Corner -->
+  <g transform="translate(340, 375) rotate(-25)">
+    <polygon points="0,0 20,-30 40,-10 20,20" fill="#EAA800"/>
+    <polygon points="0,0 20,20 -15,10" fill="#F5F5F7"/>
+    <polygon points="-15,10 -8,5 -5,12" fill="#1C1C1E"/>
+  </g>
+</svg>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Paper Sheet Shadow -->
+    <path
+        android:fillColor="#33000000"
+        android:pathData="M27,24h54a6,6 0 0 1 6,6v52a6,6 0 0 1 -6,6h-54a6,6 0 0 1 -6,-6v-52a6,6 0 0 1 6,-6z" />
+
+    <!-- Clean White Notepad Sheet -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,22h54a6,6 0 0 1 6,6v52a6,6 0 0 1 -6,6h-54a6,6 0 0 1 -6,-6v-52a6,6 0 0 1 6,-6z" />
+
+    <!-- Notepad Yellow Top Header Accent -->
+    <path
+        android:fillColor="#EAA800"
+        android:pathData="M27,22h54a6,6 0 0 1 6,6v4h-66v-4a6,6 0 0 1 6,-6z" />
+
+    <!-- Subtle Notepad Ruled Lines -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#18EAA800"
+        android:strokeWidth="1.2"
+        android:pathData="M31,39h46 M31,46h46 M31,53h46 M31,60h46 M31,67h46 M31,74h46" />
+
+    <!-- Aesthetic Cow Face Silhouette -->
+    <!-- Cow Left Horn -->
+    <path
+        android:fillColor="#D89200"
+        android:pathData="M43,44c-2,-4 -1,-8 2,-9c1,2 0,6 -2,9z" />
+
+    <!-- Cow Right Horn -->
+    <path
+        android:fillColor="#D89200"
+        android:pathData="M65,44c2,-4 1,-8 -2,-9c-1,2 0,6 2,9z" />
+
+    <!-- Cow Left Ear -->
+    <path
+        android:fillColor="#333336"
+        android:pathData="M39,47c-4,-1 -7,2 -6,5c3,1 5,-1 6,-5z" />
+
+    <!-- Cow Right Ear -->
+    <path
+        android:fillColor="#333336"
+        android:pathData="M69,47c4,-1 7,2 6,5c-3,1 -5,-1 -6,-5z" />
+
+    <!-- Cow Head Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#222224"
+        android:strokeWidth="1.5"
+        android:pathData="M44,43h20a5,5 0 0 1 5,5v10a8,8 0 0 1 -8,8h-14a8,8 0 0 1 -8,-8v-10a5,5 0 0 1 5,-5z" />
+
+    <!-- Cow Dark Spot on Left Ear/Forehead -->
+    <path
+        android:fillColor="#222224"
+        android:pathData="M44,43h8c-2,3 -1,6 -4,8c-3,1 -5,-1 -4,-8z" />
+
+    <!-- Cow Eyes -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M47,53a1.5,1.5 0 1 1 0,-0.01 M61,53a1.5,1.5 0 1 1 0,-0.01" />
+
+    <!-- Cow Snout / Muzzle -->
+    <path
+        android:fillColor="#FFAEB9"
+        android:pathData="M47,58h14a4,4 0 0 1 4,4v2a4,4 0 0 1 -4,4h-14a4,4 0 0 1 -4,-4v-2a4,4 0 0 1 4,-4z" />
+
+    <!-- Cow Nostrils -->
+    <path
+        android:fillColor="#C45A68"
+        android:pathData="M51,62.5a1,1 0 1 1 0,-0.01 M57,62.5a1,1 0 1 1 0,-0.01" />
+
+    <!-- Little Yellow Pencil / Nib Accent in Corner -->
+    <path
+        android:fillColor="#EAA800"
+        android:pathData="M69,67l6,-6l3,3l-6,6l-4,1z" />
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M68,71l2,-0.5l-1.5,-1.5z" />
+
+</vector>

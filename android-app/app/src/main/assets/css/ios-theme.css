@@ -1,0 +1,2812 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+/* ==========================================================================
+   iOS Notes Design System & Theme
+   Pixel-accurate Apple Notes / iNotes UI
+   ========================================================================== */
+
+:root {
+  --ios-yellow: #007AFF;
+  --ios-yellow-light: #EBF5FF;
+  --ios-yellow-hover: #0062CC;
+  --ios-yellow-active: #004FB3;
+  --ios-accent: #007AFF;
+  
+  --bg-primary: #F2F2F7;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #E5E5EA;
+  --bg-card: #FFFFFF;
+  --bg-translucent: rgba(242, 242, 247, 0.82);
+  --nav-bar-bg: rgba(246, 246, 246, 0.85);
+  
+  --text-primary: #1C1C1E;
+  --text-secondary: #8E8E93;
+  --text-tertiary: #C7C7CC;
+  
+  --separator: #C6C6C8;
+  --separator-light: rgba(60, 60, 67, 0.12);
+  --border-subtle: #E5E5EA;
+  
+  --ios-blue: #007AFF;
+  --ios-red: #FF3B30;
+  --ios-green: #34C759;
+  --ios-orange: #FF9500;
+  --ios-gray-fill: #7676801F;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-sheet: 0 -4px 25px rgba(0, 0, 0, 0.12);
+  
+  --font-stack: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  --header-height: 52px;
+  --bottom-bar-height: 60px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+[data-theme="dark"] {
+  --ios-yellow: #0A84FF;
+  --ios-yellow-light: #0D2646;
+  --ios-yellow-hover: #409CFF;
+  --ios-yellow-active: #0070E0;
+  --ios-accent: #0A84FF;
+
+  --bg-primary: #000000;
+  --bg-secondary: #0A0A0C;
+  --bg-tertiary: #161618;
+  --bg-card: #141416;
+  --bg-translucent: rgba(0, 0, 0, 0.88);
+  --nav-bar-bg: rgba(12, 12, 14, 0.90);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #A8A8B2;
+  --text-tertiary: #545458;
+
+  --separator: #2A2A2E;
+  --separator-light: rgba(255, 255, 255, 0.08);
+  --border-subtle: #242428;
+
+  --ios-gray-fill: #76768038;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.75);
+  --shadow-sheet: 0 -4px 30px rgba(0, 0, 0, 0.9);
+}
+
+/* Base resets & typography */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-stack);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* App Shell Layout */
+#app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* Dedicated Full Pages: Folders -> Notes List -> Note Editor */
+.ios-sidebar,
+.ios-notes-list-pane,
+.ios-editor-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+  box-sizing: border-box;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+#pane-folders {
+  z-index: 10;
+}
+
+#pane-notes-list {
+  z-index: 20;
+}
+
+#pane-editor {
+  z-index: 30;
+  background: var(--bg-secondary);
+}
+
+/* 1. VIEW FOLDERS */
+#app-container.view-folders #pane-folders {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+  pointer-events: auto;
+}
+#app-container.view-folders #pane-notes-list {
+  transform: translate3d(100%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+#app-container.view-folders #pane-editor {
+  transform: translate3d(100%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 2. VIEW NOTES */
+#app-container.view-notes #pane-folders {
+  transform: translate3d(-25%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+#app-container.view-notes #pane-notes-list {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+  pointer-events: auto;
+}
+#app-container.view-notes #pane-editor {
+  transform: translate3d(100%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 3. VIEW EDITOR */
+#app-container.view-editor #pane-folders {
+  transform: translate3d(-30%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+#app-container.view-editor #pane-notes-list {
+  transform: translate3d(-25%, 0, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+#app-container.view-editor #pane-editor {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Navigation & Header Bars */
+.ios-nav-bar {
+  height: calc(var(--header-height) + var(--safe-area-top, 0px));
+  padding-top: var(--safe-area-top, 0px);
+  padding-left: calc(16px + var(--safe-area-left, 0px));
+  padding-right: calc(16px + var(--safe-area-right, 0px));
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--nav-bar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid var(--separator-light);
+  position: relative;
+  z-index: 50;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.ios-nav-left, .ios-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--header-height);
+}
+
+.ios-nav-center {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  position: absolute;
+  top: var(--safe-area-top, 0px);
+  left: 50%;
+  transform: translateX(-50%);
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;
+}
+
+/* iOS Navigation Buttons */
+.ios-nav-btn {
+  background: none;
+  border: none;
+  color: var(--ios-yellow);
+  font-size: 17px;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.ios-nav-btn:active {
+  opacity: 0.45;
+  transform: scale(0.97);
+}
+
+.ios-nav-btn.bold {
+  font-weight: 600;
+}
+
+.ios-nav-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* Large Collapsible Title */
+.ios-large-header {
+  padding: 12px 18px 4px 18px;
+}
+
+.ios-large-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  line-height: 41px;
+}
+
+/* iOS Search Bar */
+.ios-search-wrapper {
+  padding: 8px 16px 12px 16px;
+}
+
+.ios-search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--ios-gray-fill);
+  border-radius: 10px;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.ios-search-bar svg {
+  width: 17px;
+  height: 17px;
+  fill: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.ios-search-input {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 17px;
+  width: 100%;
+  outline: none;
+}
+
+.ios-search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.ios-search-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: none;
+  color: var(--text-secondary);
+}
+
+/* Filter Chips */
+.ios-filter-chips {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 10px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ios-filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.ios-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: -0.15px;
+  font-family: inherit;
+  background: rgba(120, 120, 128, 0.09);
+  color: var(--text-secondary);
+  border: 0.5px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ios-chip:hover {
+  background: rgba(120, 120, 128, 0.15);
+  color: var(--text-primary);
+}
+
+.ios-chip.active {
+  background: var(--ios-yellow);
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .ios-chip.active {
+  color: #000000;
+}
+
+/* Scrollable Container */
+.ios-scroll-content {
+  flex: 1 1 0%;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 8px calc(16px + var(--safe-area-right, 0px)) calc(var(--bottom-bar-height) + var(--safe-area-bottom, 0px) + 24px) calc(16px + var(--safe-area-left, 0px));
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+}
+
+/* Inset Grouped Section for iOS Cards */
+.ios-section-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin: 18px 0 8px 16px;
+  letter-spacing: -0.08px;
+}
+
+.ios-card-group {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+}
+
+/* Individual Note Card */
+.ios-note-item {
+  padding: 12px 16px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ios-note-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 0;
+  height: 0.5px;
+  background: var(--separator-light);
+}
+
+.ios-note-item:active, .ios-note-item.active {
+  background-color: var(--ios-gray-fill);
+}
+
+.ios-note-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-note-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 85%;
+}
+
+.ios-note-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.ios-badge-icon {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--ios-yellow);
+}
+
+.ios-note-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.ios-note-date {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.ios-note-snippet {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+}
+
+/* Empty State - Apple Soft Aesthetic */
+.ios-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 48px 24px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.ios-empty-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: rgba(10, 132, 255, 0.09);
+  border: 1px solid rgba(10, 132, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--ios-yellow);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(10, 132, 255, 0.06);
+}
+
+.ios-empty-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.ios-empty-title {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+}
+
+.ios-empty-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  max-width: 250px;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+}
+
+
+/* Inset Grouped Card (Apple iOS Grouped List Style) */
+.ios-inset-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 0.5px solid var(--border-subtle);
+  margin-bottom: 20px;
+}
+
+/* Sidebar Folder Items */
+.ios-folder-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  position: relative;
+}
+
+.ios-folder-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 48px;
+  right: 0;
+  height: 0.5px;
+  background: var(--separator-light);
+}
+
+.ios-folder-item:active, .ios-folder-item.active {
+  background-color: var(--ios-gray-fill);
+}
+
+.ios-folder-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ios-folder-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--ios-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-folder-name {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.ios-folder-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* Bottom Bar */
+.ios-bottom-bar {
+  height: calc(var(--bottom-bar-height) + var(--safe-area-bottom, 0px));
+  padding-top: 0;
+  padding-bottom: var(--safe-area-bottom, 0px);
+  padding-left: calc(16px + var(--safe-area-left, 0px));
+  padding-right: calc(16px + var(--safe-area-right, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--nav-bar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--separator-light);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  box-sizing: border-box;
+}
+
+.ios-note-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+  position: absolute;
+  bottom: var(--safe-area-bottom, 0px);
+  height: var(--bottom-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ios-icon-btn {
+  background: none;
+  border: none;
+  color: var(--ios-yellow);
+  cursor: pointer;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.ios-icon-btn:active {
+  opacity: 0.45;
+  transform: scale(0.92);
+}
+
+.ios-icon-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* Note Editor Pane */
+.ios-editor-scroll {
+  flex: 1 1 0%;
+  min-height: 0 !important;
+  height: 100%;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+  padding: 16px calc(20px + var(--safe-area-right, 0px)) calc(var(--bottom-bar-height) + var(--safe-area-bottom, 0px) + 120px) calc(20px + var(--safe-area-left, 0px));
+}
+
+.ios-editor-timestamp {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.ios-title-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 700;
+  outline: none;
+  margin-top: 4px;
+  margin-bottom: 14px;
+  line-height: 1.35;
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.ios-title-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.ios-body-editor {
+  width: 100%;
+  min-height: 380px;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-family: inherit;
+  word-break: break-word;
+  touch-action: pan-y;
+  padding-bottom: 120px;
+}
+
+.ios-body-editor > div:not(.ios-media-container),
+.ios-body-editor > p {
+  min-height: 1.45em;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Dedicated Atomic Media Container for Sketches & Photos */
+.ios-media-container,
+.ios-body-editor > .ios-media-container {
+  display: block;
+  clear: both;
+  width: 100%;
+  margin: 22px 0 !important;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  text-align: center;
+}
+
+.ios-media-container img,
+.ios-drawing-attachment,
+.ios-media-attachment,
+.ios-body-editor img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 16px auto;
+  clear: both;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  touch-action: pan-y;
+}
+
+.ios-checklist-block,
+.ios-check-item,
+.ios-check-text {
+  touch-action: pan-y;
+}
+
+.ios-body-editor:empty::before {
+  content: '';
+  display: none;
+}
+
+/* iOS Checklists Inside Editor */
+.ios-checklist-block {
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ios-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 3px 0;
+  line-height: 1.5;
+  cursor: default;
+}
+
+.ios-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--ios-yellow);
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.ios-checkbox::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+}
+
+.ios-checkbox:active {
+  transform: scale(0.9);
+}
+
+.ios-check-item.checked .ios-checkbox {
+  background: var(--ios-yellow);
+  border-color: var(--ios-yellow);
+}
+
+.ios-check-item.checked .ios-checkbox::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 9px;
+  border: solid #000000;
+  border-width: 0 2.2px 2.2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.ios-check-text {
+  flex: 1;
+  outline: none;
+  font-size: 17px;
+  line-height: 1.5;
+  min-height: 24px;
+  word-break: break-word;
+  color: var(--text-primary);
+  transition: opacity 0.2s ease, text-decoration 0.2s ease;
+}
+
+.ios-check-item.checked .ios-check-text {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+  opacity: 0.65;
+}
+
+/* Audio Memo Card */
+.ios-audio-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border-subtle);
+}
+
+.ios-audio-play-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ios-yellow);
+  border: none;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .ios-audio-play-btn {
+  color: #000000;
+}
+
+.ios-audio-play-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.ios-audio-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ios-audio-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ios-audio-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--separator-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ios-audio-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--ios-yellow);
+  transition: width 0.1s linear;
+}
+
+.ios-audio-duration {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Drawing Canvas in Note */
+.ios-drawing-attachment {
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  border: 1px solid var(--border-subtle);
+  margin: 14px 0;
+  display: block;
+  background: #FFFFFF;
+}
+
+/* Math notes highlight badge */
+.ios-math-result {
+  background: var(--ios-yellow-light);
+  color: var(--ios-yellow-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+[data-theme="dark"] .ios-math-result {
+  background: #3A3008;
+  color: #FFD60A;
+}
+
+/* Editor Toolbar (iOS Keyboard Accessory Bar) */
+.ios-editor-toolbar {
+  height: calc(var(--bottom-bar-height) + var(--safe-area-bottom, 0px));
+  padding-top: 0;
+  padding-bottom: var(--safe-area-bottom, 0px);
+  padding-left: calc(16px + var(--safe-area-left, 0px));
+  padding-right: calc(16px + var(--safe-area-right, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--nav-bar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--separator-light);
+  position: absolute;
+  bottom: var(--keyboard-height, 0px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  transition: bottom 0.15s ease-out;
+}
+
+[data-keyboard-open="true"] .ios-editor-toolbar {
+  height: var(--bottom-bar-height);
+  padding-bottom: 0;
+}
+
+/* Modal Sheets & Drawers */
+.ios-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.ios-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ios-sheet {
+  background: var(--bg-secondary);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px 20px 0 0;
+  padding: 12px calc(20px + var(--safe-area-right, 0px)) calc(34px + var(--safe-area-bottom, 0px)) calc(20px + var(--safe-area-left, 0px));
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: var(--shadow-sheet);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+}
+
+.ios-modal-overlay.active .ios-sheet {
+  transform: translateY(0);
+}
+
+.ios-drag-handle {
+  width: 36px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--separator);
+  margin: 0 auto 16px auto;
+}
+
+.ios-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ios-sheet-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Connection Modal with QR Code */
+.ios-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.ios-qr-img {
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.ios-phone-url-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ios-gray-fill);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ios-yellow);
+  cursor: pointer;
+}
+
+.ios-guide-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.ios-guide-card b {
+  color: var(--ios-yellow);
+}
+
+/* PIN Lock Screen Overlay */
+.ios-pin-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: calc(24px + var(--safe-area-top, 0px)) calc(24px + var(--safe-area-right, 0px)) calc(24px + var(--safe-area-bottom, 0px)) calc(24px + var(--safe-area-left, 0px));
+}
+
+.ios-pin-dots {
+  display: flex;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.ios-pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ios-yellow);
+  transition: background 0.15s ease;
+}
+
+.ios-pin-dot.filled {
+  background: var(--ios-yellow);
+}
+
+.ios-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 75px);
+  gap: 18px 24px;
+}
+
+.ios-keypad-btn {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: var(--ios-gray-fill);
+  border: none;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.ios-keypad-btn:active {
+  background-color: var(--ios-yellow);
+  color: #FFFFFF;
+  transform: scale(0.94);
+}
+
+/* Drawing Canvas Modal */
+.ios-canvas-sheet {
+  max-width: 720px;
+  height: 85vh;
+}
+
+.ios-drawing-canvas {
+  width: 100%;
+  flex: 1;
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.ios-canvas-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 4px 0;
+  gap: 12px;
+}
+
+.ios-color-swatches {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ios-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.ios-swatch.active {
+  transform: scale(1.22);
+  border-color: var(--text-primary);
+}
+
+/* Sync Status Indicator Pill (Apple Minimalist Aesthetic) */
+.ios-sync-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+}
+
+.ios-sync-pill:active {
+  opacity: 0.5;
+}
+
+
+/* =============================================================================
+   CALIBRATED APPLE STATUS INDICATOR (CLEAN, REFINED, NEVER STRETCHED)
+   ============================================================================= */
+.ios-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ios-sync-pill:active {
+  opacity: 0.6;
+}
+
+/* Vibrant, alive pulsating sync dot */
+.ios-sync-dot {
+  position: relative;
+  width: 6px !important;
+  height: 6px !important;
+  min-width: 6px !important;
+  max-width: 6px !important;
+  min-height: 6px !important;
+  max-height: 6px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  background: #007AFF !important;
+  box-shadow: 0 0 5px #007AFF, 0 0 8px rgba(0, 122, 255, 0.5) !important;
+  transition: all 0.25s ease;
+}
+
+.ios-sync-dot::after {
+  content: "" !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 122, 255, 0.35) !important;
+  animation: dotVibrantPulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+@keyframes dotVibrantPulse {
+  0% { transform: scale(0.9); opacity: 0.85; }
+  50% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(0.9); opacity: 0; }
+}
+
+.ios-sync-dot.offline {
+  background: #FF3B30 !important;
+  box-shadow: 0 0 5px #FF3B30, 0 0 8px rgba(255, 59, 48, 0.5) !important;
+}
+.ios-sync-dot.offline::after {
+  content: "" !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 59, 48, 0.35) !important;
+  animation: dotVibrantPulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+.ios-sync-dot.syncing {
+  background: #FF9500 !important;
+  box-shadow: 0 0 8px #FF9500 !important;
+}
+.ios-sync-dot.syncing::after {
+  background: rgba(255, 149, 0, 0.45) !important;
+}
+
+.ios-sync-dot.error {
+  background: #FF3B30 !important;
+  box-shadow: 0 0 8px #FF3B30 !important;
+}
+.ios-sync-dot.error::after {
+  background: rgba(255, 59, 48, 0.45) !important;
+}
+
+
+/* Toast notification (Soft Dynamic HUD Capsule - Integrated with UI) */
+.ios-toast {
+  position: fixed;
+  top: calc(18px + var(--safe-area-top, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(-140%) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--border-subtle);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              visibility 0.22s ease;
+  will-change: transform, opacity;
+  max-width: 90vw;
+  white-space: nowrap;
+}
+
+.ios-toast.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+}
+
+.ios-toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--ios-yellow);
+}
+
+.ios-toast-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
+.ios-toast-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* Voice Dictation Floating Wave Bar (Soft Bottom Pop-up) */
+.ios-dictation-bar {
+  position: fixed;
+  bottom: calc(72px + var(--safe-area-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(80px) scale(0.92);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 8px 12px 8px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28), 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 0.5px solid var(--border-subtle);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 5000;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+  max-width: 92vw;
+  box-sizing: border-box;
+  will-change: transform, opacity;
+}
+
+.ios-dictation-bar.active {
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Audio waveform visualizer */
+.ios-speech-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.ios-speech-wave span {
+  width: 3px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--ios-yellow);
+  animation: speechWaveBar 1.2s ease-in-out infinite alternate;
+}
+
+.ios-speech-wave span:nth-child(1) { animation-delay: 0.1s; height: 8px; }
+.ios-speech-wave span:nth-child(2) { animation-delay: 0.3s; height: 16px; }
+.ios-speech-wave span:nth-child(3) { animation-delay: 0.5s; height: 12px; }
+.ios-speech-wave span:nth-child(4) { animation-delay: 0.2s; height: 14px; }
+
+@keyframes speechWaveBar {
+  0% { transform: scaleY(0.4); opacity: 0.6; }
+  50% { transform: scaleY(1.3); opacity: 1; }
+  100% { transform: scaleY(0.5); opacity: 0.7; }
+}
+
+.ios-dictation-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  color: var(--text-primary);
+  letter-spacing: -0.1px;
+}
+
+.ios-dictation-btn {
+  background: var(--ios-yellow);
+  color: #000;
+  border: none;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  flex-shrink: 0;
+  touch-action: manipulation !important;
+}
+
+.ios-dictation-btn:active {
+  transform: scale(0.94);
+  opacity: 0.8;
+}
+
+.ios-mic-active {
+  color: var(--ios-red) !important;
+  animation: pulse 1.2s infinite;
+}
+
+/* Rich Text Formatting Toolbar Buttons */
+.ios-format-btn {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  padding: 0 6px;
+  font-family: serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ios-format-btn.active {
+  background-color: var(--ios-yellow) !important;
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+/* Folder Edit Mode Styling */
+.ios-folder-delete-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FF3B30;
+  color: #FFFFFF;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+  z-index: 5;
+}
+
+.ios-folder-delete-btn::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  left: -10px;
+  right: -10px;
+}
+
+.ios-folder-delete-btn:active {
+  transform: scale(0.9);
+}
+
+.ios-note-item {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: pan-y;
+}
+
+.ios-note-longpress-active {
+  background-color: var(--ios-gray-fill) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+/* Tactile Apple Physics on Touches & Clicks */
+.ios-folder-item {
+  transition: background-color 0.18s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ios-folder-item:active {
+  background-color: var(--ios-gray-fill);
+  transform: scale(0.985);
+}
+
+.ios-note-card {
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), 
+              box-shadow 0.2s ease, 
+              background-color 0.18s ease;
+}
+.ios-note-card:active {
+  transform: scale(0.98);
+}
+
+.ios-nav-btn {
+  transition: opacity 0.16s ease, transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ios-nav-btn:active {
+  opacity: 0.6;
+  transform: scale(0.94);
+}
+
+.ios-icon-btn {
+  transition: opacity 0.16s ease, transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ios-icon-btn:active {
+  opacity: 0.6;
+  transform: scale(0.90);
+}
+
+.ios-chip {
+  transition: all 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ios-chip:active {
+  transform: scale(0.93);
+}
+
+#btn-new-folder, #btn-sidebar-new-note, #btn-create-note {
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.16s ease;
+}
+#btn-new-folder:active, #btn-sidebar-new-note:active, #btn-create-note:active {
+  transform: scale(0.92);
+  opacity: 0.7;
+}
+
+/* iOS Native Alert Dialog (New Folder) */
+.ios-alert-dialog {
+  background: var(--bg-card);
+  width: 280px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  border: 0.5px solid var(--border-subtle);
+  text-align: center;
+  transform: scale(0.9) translateY(10px);
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  padding-top: 20px;
+  margin: auto;
+}
+
+.ios-modal-overlay.active .ios-alert-dialog {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.ios-alert-title {
+  font-family: var(--font-stack);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ios-alert-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.ios-alert-input-wrap {
+  padding: 0 16px 18px 16px;
+}
+
+.ios-alert-input {
+  width: 100%;
+  height: 32px;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--separator);
+  border-radius: 7px;
+  padding: 0 10px;
+  font-family: var(--font-stack);
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.ios-alert-input:focus {
+  border-color: var(--ios-yellow);
+}
+
+.ios-alert-buttons {
+  display: flex;
+  border-top: 0.5px solid var(--separator-light);
+  height: 44px;
+}
+
+.ios-alert-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: var(--font-stack);
+  font-size: 16px;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.ios-alert-btn:active {
+  background: var(--ios-gray-fill);
+}
+
+.ios-alert-btn.cancel {
+  color: var(--ios-blue);
+  border-right: 0.5px solid var(--separator-light);
+}
+
+.ios-alert-btn.confirm {
+  color: var(--ios-yellow);
+  font-weight: 700;
+}
+
+/* Folder Hard-Press Active Feedback */
+.ios-folder-longpress-active {
+  background-color: var(--ios-gray-fill) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+/* Recently Deleted Info Banner */
+.ios-trash-banner {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 14px 20px 8px 20px;
+  line-height: 1.45;
+  letter-spacing: -0.1px;
+}
+
+/* =============================================================================
+   AESTHETIC 3-DOTS ACTION SHEET & MENU ITEMS (APPLE DESIGN)
+   ============================================================================= */
+.ios-action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  cursor: pointer;
+  background: var(--bg-card);
+  transition: background-color 0.16s ease, transform 0.14s cubic-bezier(0.25, 1, 0.5, 1);
+  border-bottom: 0.5px solid var(--separator-light);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.ios-action-item:first-child {
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+.ios-action-item:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+.ios-action-item:active {
+  background-color: var(--ios-gray-fill);
+  transform: scale(0.985);
+}
+.ios-action-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.ios-action-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.16s ease;
+}
+.ios-action-badge svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+.ios-action-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+/* Silky iOS Modals & Bottom Sheets */
+.ios-modal-overlay {
+  transition: opacity 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease !important;
+}
+.ios-sheet {
+  transition: transform 0.34s cubic-bezier(0.28, 0.96, 0.34, 1), opacity 0.25s ease !important;
+}
+
+/* Tactile press on folder item */
+.ios-folder-item:active {
+  transform: scale(0.982);
+  background-color: var(--ios-gray-fill);
+}
+
+/* =============================================================================
+   COWNOTES UNIFIED NOTE ACTIONS MENU (NO BOXES, APPLE MINIMALIST VECTOR UI)
+   ============================================================================= */
+.ios-menu-group {
+  background: var(--bg-card);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 0.5px solid var(--separator-light);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ios-menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 0.15s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1);
+  border-bottom: 0.5px solid var(--separator-light);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.ios-menu-row:last-child {
+  border-bottom: none;
+}
+
+.ios-menu-row:active {
+  background-color: var(--ios-gray-fill);
+  transform: scale(0.988);
+}
+
+.ios-menu-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ios-menu-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ios-yellow);
+}
+
+.ios-menu-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.ios-menu-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.ios-menu-chevron {
+  width: 14px;
+  height: 14px;
+  fill: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+.ios-menu-row.danger .ios-menu-icon {
+  color: #FF453A !important;
+}
+
+.ios-menu-row.danger .ios-menu-label {
+  color: #FF453A !important;
+  font-weight: 600;
+}
+
+/* Checkbox Caret & Selection Protection */
+.ios-checkbox {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  caret-color: transparent !important;
+  pointer-events: auto;
+}
+.ios-check-text {
+  min-width: 10px;
+  outline: none;
+}
+
+/* =============================================================================
+   APPLE IOS CONTEXT MENU & DROPDOWN POPOVER (IMAGES 1 & 2)
+   ============================================================================= */
+.ios-context-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.16s ease, visibility 0.16s ease;
+}
+
+.ios-context-menu-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.ios-context-menu {
+  position: absolute;
+  background: #1C1C1E;
+  border: 0.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  overflow: hidden;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(0.95);
+  opacity: 0;
+  transform-origin: top right;
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.15s ease;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+[data-theme="light"] .ios-context-menu {
+  background: rgba(255, 255, 255, 0.97);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18), 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.ios-context-menu-backdrop.active .ios-context-menu {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.ios-ctx-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  cursor: pointer;
+  background: transparent;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-theme="light"] .ios-ctx-row {
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+}
+
+.ios-ctx-row:last-child {
+  border-bottom: none;
+}
+
+.ios-ctx-row:active {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="light"] .ios-ctx-row:active {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.ios-ctx-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.ios-ctx-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.2px;
+}
+
+[data-theme="light"] .ios-ctx-label {
+  color: #000000;
+}
+
+.ios-ctx-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+
+[data-theme="light"] .ios-ctx-sub {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ios-ctx-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ios-yellow, #E5A93C);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+[data-theme="light"] .ios-ctx-icon {
+  color: var(--ios-yellow, #D49028);
+}
+
+.ios-ctx-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.ios-ctx-icon svg:not([fill="none"]) {
+  fill: currentColor;
+}
+
+/* Destructive Delete Row (Image 1) */
+.ios-ctx-row.danger .ios-ctx-label,
+.ios-ctx-row.danger .ios-ctx-icon {
+  color: #FF453A !important;
+}
+
+/* Soft, aesthetic Apple iOS 3-dots button */
+.ios-icon-circle-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: rgba(120, 120, 128, 0.16) !important;
+  border: none !important;
+  color: var(--ios-yellow) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s ease, opacity 0.15s ease !important;
+  flex-shrink: 0 !important;
+  box-shadow: none !important;
+}
+
+.ios-icon-circle-btn:hover {
+  background: rgba(120, 120, 128, 0.26) !important;
+}
+
+.ios-icon-circle-btn:active {
+  transform: scale(0.92) !important;
+  opacity: 0.7 !important;
+  background: rgba(120, 120, 128, 0.36) !important;
+}
+
+.ios-icon-circle-btn svg {
+  width: 17px !important;
+  height: 17px !important;
+  fill: currentColor !important;
+  display: block !important;
+}
+
+
+
+/* Bottom selection bar */
+.ios-selection-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  height: 100%;
+  width: 100%;
+}
+
+.ios-bottom-bar.selection-active .ios-selection-bar {
+  display: flex;
+}
+
+.ios-bottom-bar.selection-active > :not(.ios-selection-bar) {
+  display: none !important;
+}
+
+.ios-sel-btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ios-yellow);
+  cursor: pointer;
+  padding: 8px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-sel-btn.danger {
+  color: #FF453A !important;
+}
+
+.ios-sel-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* =============================================================================
+   APPLE SYSTEM BLUE THEME ENHANCEMENTS & RECENTLY DELETED PENCIL REMOVAL
+   ============================================================================= */
+#pane-notes-list[data-active-folder="trash"] #btn-create-note,
+.in-trash #btn-create-note {
+  display: none !important;
+}
+
+
+
+
+/* =============================================================================
+   EDIT FOLDER MODAL & CURATED VECTOR ICON PICKER (APPLE SF SYMBOL STYLE)
+   ============================================================================= */
+.ios-folder-edit-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 0.5px solid var(--separator-light);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 6px;
+}
+
+.ios-folder-preview-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: rgba(234, 168, 0, 0.15);
+  color: var(--ios-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-folder-preview-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.ios-folder-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ios-folder-name-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-family: inherit;
+  padding-right: 24px;
+}
+
+.ios-folder-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 10px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 14px;
+  border: 0.5px solid var(--separator-light);
+  box-shadow: var(--shadow-sm);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.ios-folder-icon-choice {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ios-gray-fill);
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.16s ease;
+  padding: 0;
+}
+
+.ios-folder-icon-choice svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.ios-folder-icon-choice:hover {
+  transform: scale(1.06);
+}
+
+.ios-folder-icon-choice.selected {
+  background: var(--ios-yellow);
+  color: #000000;
+  border-color: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(234, 168, 0, 0.35);
+  transform: scale(1.08);
+}
+
+.ios-editor-toolbar .ios-icon-btn,
+.ios-format-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 9px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ios-editor-toolbar .ios-icon-btn svg,
+.ios-format-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.ios-editor-toolbar .ios-icon-btn:active,
+.ios-format-btn:active {
+  transform: scale(0.9);
+  background: var(--ios-gray-fill);
+}
+
+.ios-format-btn.active {
+  background-color: var(--ios-yellow) !important;
+  color: #000000 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.ios-format-btn.active svg {
+  stroke: #000000 !important;
+}
+
+
+/* =============================================================================
+   REFINED TOOLBAR ICONS, TYPOGRAPHY & NOTE CARD PREVIEWS
+   ============================================================================= */
+.ios-format-label {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Plus Jakarta Sans", sans-serif;
+  font-size: 17px;
+  line-height: 1;
+  color: inherit;
+  display: inline-block;
+  user-select: none;
+}
+.ios-format-label.bold {
+  font-weight: 800;
+}
+.ios-format-label.italic {
+  font-style: italic;
+  font-weight: 600;
+}
+.ios-format-label.underline {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.ios-editor-toolbar .ios-icon-btn svg {
+  width: 22px !important;
+  height: 22px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.9 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+.ios-note-preview-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 15px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.35 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.ios-note-date {
+  flex-shrink: 0 !important;
+  color: var(--text-secondary) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.ios-note-snippet {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: var(--text-secondary) !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.ios-note-title {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 90% !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+}
+
+
+/* =============================================================================
+   APPLE NOTE CARD ALIGNMENT & CLEAN TYPOGRAPHY (NO OFFSET, PERFECT ALIGNMENT)
+   ============================================================================= */
+.ios-note-item {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 10px 16px !important;
+  min-height: 58px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border-bottom: 0.5px solid var(--separator-light) !important;
+  transition: background-color 0.15s ease !important;
+  -webkit-tap-highlight-color: transparent !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
+  overflow: hidden !important;
+}
+
+.ios-note-item:last-child {
+  border-bottom: none !important;
+}
+
+.ios-note-item:active, .ios-note-item.active {
+  background-color: var(--ios-gray-fill) !important;
+}
+
+/* Selection Tick: In-Flow Far-Left Placement (Zero Overlap with Note Text) */
+.ios-note-select-check {
+  display: none !important;
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  max-width: 22px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--border-subtle) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  margin: 0 14px 0 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  pointer-events: none !important;
+  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.ios-note-item.selection-active .ios-note-select-check {
+  display: flex !important;
+}
+
+.ios-note-item.selected .ios-note-select-check,
+.ios-note-select-check.checked {
+  background: var(--ios-yellow) !important;
+  border-color: var(--ios-yellow) !important;
+}
+
+.ios-note-select-check svg {
+  width: 12px !important;
+  height: 12px !important;
+  fill: #FFFFFF !important;
+  opacity: 0 !important;
+  transform: scale(0.4) !important;
+  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.ios-note-item.selected .ios-note-select-check svg,
+.ios-note-select-check.checked svg {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+.ios-note-item.selected {
+  background-color: rgba(10, 132, 255, 0.08) !important;
+}
+
+.ios-note-content-col {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.ios-note-row-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.ios-note-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  letter-spacing: -0.2px !important;
+}
+
+.ios-note-badges {
+  display: flex !important;
+  gap: 6px !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  margin-left: 8px !important;
+}
+
+.ios-note-preview-row {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 6px !important;
+  font-size: 14px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.35 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.ios-note-date {
+  flex-shrink: 0 !important;
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4 !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ios-note-snippet {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: var(--text-secondary) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  text-align: left !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* =============================================================================
+   ULTRA-FAST TOUCH & GPU ACCELERATION
+   ============================================================================= */
+* {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+button, .ios-nav-btn, .ios-note-item, .ios-folder-item, .ios-icon-circle-btn, .ios-menu-row, .ios-action-chip {
+  touch-action: manipulation !important;
+}
+
+.ios-note-item {
+  contain: layout style !important;
+}
+
+.ios-folder-item {
+  contain: layout style !important;
+}
+
+/* Crisp pixel-perfect rendering on desktop PC monitors */
+@media (min-width: 768px) {
+  .ios-note-item,
+  .ios-folder-item {
+    transform: none !important;
+    will-change: auto !important;
+    contain: none !important;
+  }
+  .ios-note-snippet,
+  .ios-note-date {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    opacity: 1 !important;
+  }
+}
+
+
+/* Smooth Tactile Feedback & Spring Physics */
+.ios-nav-btn,
+.ios-circle-btn,
+.ios-format-btn,
+.ios-dictation-btn,
+.ios-card-btn,
+.ios-fab {
+  touch-action: manipulation !important;
+  transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease !important;
+  will-change: transform;
+}
+
+.ios-nav-btn:active,
+.ios-circle-btn:active,
+.ios-fab:active {
+  transform: scale(0.92) !important;
+  opacity: 0.72 !important;
+}
+
+.ios-format-btn:active,
+.ios-dictation-btn:active {
+  transform: scale(0.94) !important;
+}
+
+.ios-note-card {
+  touch-action: manipulation !important;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s ease !important;
+  will-change: transform;
+}
+
+.ios-note-card:active {
+  transform: scale(0.982) !important;
+  background-color: var(--bg-hover) !important;
+}
+
+.ios-folder-item {
+  touch-action: manipulation !important;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s ease !important;
+  will-change: transform;
+}
+
+.ios-folder-item:active {
+  transform: scale(0.985) !important;
+  background-color: var(--bg-hover) !important;
+}
+
+.ios-folders-list,
+.ios-notes-list,
+.ios-editor-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+
+/* Voice Memo Recording Floating Bar (Soft UI-Integrated HUD Pop-up) */
+.ios-voicememo-bar {
+  position: fixed;
+  bottom: calc(74px + var(--safe-area-bottom, 0px));
+  left: 50%;
+  transform: translate3d(-50%, 80px, 0) scale(0.92);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 7px 10px 7px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22), 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 0.5px solid var(--border-subtle);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 5000;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.2), opacity 0.24s ease;
+  max-width: 94vw;
+  box-sizing: border-box;
+  will-change: transform, opacity;
+}
+
+.ios-voicememo-bar.active {
+  transform: translate3d(-50%, 0, 0) scale(1) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.ios-voicememo-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ios-voicememo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ios-red);
+  box-shadow: 0 0 8px rgba(255, 69, 58, 0.6);
+  animation: pulse 1.4s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+.ios-voicememo-timer {
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.15px;
+  color: var(--text-primary);
+}
+
+.ios-voicememo-waves {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.ios-voicememo-waves span {
+  width: 2.5px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--ios-yellow);
+  animation: voiceWavePulse 1.2s ease-in-out infinite alternate;
+}
+
+.ios-voicememo-waves span:nth-child(1) { animation-delay: 0.1s; height: 8px; }
+.ios-voicememo-waves span:nth-child(2) { animation-delay: 0.3s; height: 16px; }
+.ios-voicememo-waves span:nth-child(3) { animation-delay: 0.5s; height: 12px; }
+.ios-voicememo-waves span:nth-child(4) { animation-delay: 0.2s; height: 14px; }
+.ios-voicememo-waves span:nth-child(5) { animation-delay: 0.4s; height: 10px; }
+
+@keyframes voiceWavePulse {
+  0% { transform: scaleY(0.35); opacity: 0.55; }
+  50% { transform: scaleY(1.35); opacity: 1; }
+  100% { transform: scaleY(0.45); opacity: 0.65; }
+}
+
+.ios-voicememo-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.ios-voicememo-btn {
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.ios-voicememo-btn:active {
+  transform: scale(0.92);
+  opacity: 0.8;
+}
+
+.ios-voicememo-btn.cancel {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0.5px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-voicememo-btn.cancel svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+}
+
+.ios-voicememo-btn.stop {
+  background: var(--ios-yellow);
+  color: #000000;
+  border-radius: 9999px;
+  padding: 5px 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: -0.1px;
+}
+
+.ios-voicememo-btn.stop svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+
+/* Audio card interactive styling */
+.ios-audio-card {
+  user-select: none;
+  cursor: default;
+}
+.ios-audio-play-btn {
+  touch-action: manipulation !important;
+  transition: transform 0.14s ease, opacity 0.14s ease !important;
+}
+.ios-audio-play-btn:active {
+  transform: scale(0.9) !important;
+}
+.ios-audio-progress-bar {
+  cursor: pointer;
+  position: relative;
+  height: 6px;
+  background: var(--separator-light);
+  border-radius: 3px;
+}
+.ios-audio-progress-fill {
+  pointer-events: none;
+  border-radius: 3px;
+}
+
+
+/* Audio Memo Card Wrapper & Aesthetics */
+.ios-audio-card-wrapper {
+  display: block;
+  margin: 14px 0;
+  user-select: none;
+  contain: layout;
+}
+.ios-audio-card {
+  background: var(--bg-card) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  border: 0.5px solid var(--border-subtle) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* =============================================================================
+   UNIVERSAL SLEEK SCROLLBARS (NEVER WHITE, HIDDEN ON SHEETS/MODALS)
+   ============================================================================= */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.ios-sheet,
+.ios-modal-overlay,
+.ios-modal-card {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.ios-sheet::-webkit-scrollbar,
+.ios-modal-overlay::-webkit-scrollbar,
+.ios-modal-card::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* =============================================================================
+   MONTH OF YEAR SECTION HEADERS & FOLDER LOCK BADGE
+   ============================================================================= */
+.ios-section-header.ios-month-header {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  text-transform: none !important;
+  margin: 22px 0 8px 16px !important;
+  letter-spacing: -0.35px !important;
+}
+
+.ios-section-header.ios-month-header.first-header {
+  margin-top: 8px !important;
+}
+
+.ios-note-folder-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 13px !important;
+  color: var(--text-tertiary) !important;
+  margin-top: 2px !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.ios-note-folder-row svg {
+  width: 13px !important;
+  height: 13px !important;
+  fill: currentColor !important;
+  opacity: 0.75 !important;
+  flex-shrink: 0 !important;
+}
+
+.ios-folder-lock-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  margin-left: 6px !important;
+  color: var(--text-tertiary) !important;
+  vertical-align: middle !important;
+}
+
+.ios-folder-lock-badge svg {
+  width: 13px !important;
+  height: 13px !important;
+  fill: currentColor !important;
+}
